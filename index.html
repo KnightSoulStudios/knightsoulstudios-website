@@ -64,14 +64,16 @@
             pointer-events: none;
         }
 
-        /* The flying logo clone -- this is what animates */
+        /* The flying logo clone -- hidden until JS positions it */
         #flying-logo {
             position: fixed;
             z-index: 300;
             object-fit: contain;
             border-radius: 50%;
             pointer-events: none;
-            /* positioned and sized by JS */
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
 
         /* Static logo on landing -- hidden once flying starts */
