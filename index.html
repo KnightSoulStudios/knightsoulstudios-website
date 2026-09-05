@@ -325,8 +325,8 @@
             font-weight: 600;
             letter-spacing: 0.22em;
             text-transform: uppercase;
-            color: #0D0F1A;
-            background: #6B9E4E;
+            color: var(--base);
+            background: var(--accent);
             border: none;
             padding: 14px 36px;
             cursor: pointer;
@@ -738,58 +738,83 @@
         var navName       = document.getElementById('nav-studio-name');
         var navLinks      = document.getElementById('nav-links');
 
-        // Get current position and size of the static logo on the landing page
-        var fromRect = staticLogo.getBoundingClientRect();
+        // Step 1 -- make the site and nav visible but fully transparent
+        // so we can measure the real position of the nav placeholder
+        site.style.opacity      = '0';
+        site.style.pointerEvents= 'none';
+        site.style.display      = 'block';
+        nav.style.opacity       = '0';
+        nav.style.transition    = 'none';
+        nav.classList.add('visible');
 
-        // Get where the nav placeholder is -- this is where logo will land
-        var toRect = navPlaceholder.getBoundingClientRect();
-
-        // Position the flying logo exactly over the static logo to start
-        flyingLogo.style.width       = fromRect.width  + 'px';
-        flyingLogo.style.height      = fromRect.height + 'px';
-        flyingLogo.style.left        = fromRect.left   + 'px';
-        flyingLogo.style.top         = fromRect.top    + 'px';
-        flyingLogo.style.transition  = 'none';
-        flyingLogo.style.opacity     = '1';
-        flyingLogo.style.borderRadius= '50%';
-
-        // Hide the static logo now that flying clone is covering it
-        staticLogo.style.opacity = '0';
-
-        // Fade out the rest of the landing screen text
-        landing.style.transition = 'opacity 0.4s ease';
-        landing.style.opacity    = '0';
-
-        // Show the site behind (but nav still hidden)
-        site.classList.add('visible');
-
-        // After one frame, trigger the fly animation
+        // Step 2 -- measure positions after nav is in the DOM
         requestAnimationFrame(function() {
+            var fromRect = staticLogo.getBoundingClientRect();
+            var toRect   = navPlaceholder.getBoundingClientRect();
+
+            // Step 3 -- place flying logo exactly over the static landing logo
+            flyingLogo.style.transition   = 'none';
+            flyingLogo.style.opacity      = '1';
+            flyingLogo.style.width        = fromRect.width  + 'px';
+            flyingLogo.style.height       = fromRect.height + 'px';
+            flyingLogo.style.left         = fromRect.left   + 'px';
+            flyingLogo.style.top          = fromRect.top    + 'px';
+            flyingLogo.style.borderRadius = '50%';
+
+            // Hide the static logo -- flying clone covers it exactly
+            staticLogo.style.opacity = '0';
+
+            // Step 4 -- begin transitions on next frame
             requestAnimationFrame(function() {
-                flyingLogo.style.transition = 'left 0.7s cubic-bezier(0.4,0,0.2,1), top 0.7s cubic-bezier(0.4,0,0.2,1), width 0.7s cubic-bezier(0.4,0,0.2,1), height 0.7s cubic-bezier(0.4,0,0.2,1)';
+
+                // Fade out landing text and background
+                landing.style.transition = 'opacity 0.45s ease';
+                landing.style.opacity    = '0';
+
+                // Fade in the site content
+                site.style.transition = 'opacity 0.45s ease 0.15s';
+                site.style.opacity    = '1';
+
+                // Fly the logo from centre to nav position
+                var dur = '0.65s';
+                var ease = 'cubic-bezier(0.4, 0, 0.2, 1)';
+                flyingLogo.style.transition =
+                    'left '   + dur + ' ' + ease + ',' +
+                    'top '    + dur + ' ' + ease + ',' +
+                    'width '  + dur + ' ' + ease + ',' +
+                    'height ' + dur + ' ' + ease;
+
                 flyingLogo.style.left   = toRect.left   + 'px';
                 flyingLogo.style.top    = toRect.top    + 'px';
                 flyingLogo.style.width  = toRect.width  + 'px';
                 flyingLogo.style.height = toRect.height + 'px';
+
+                // Step 5 -- exactly when animation ends, swap flying clone
+                // for the real nav logo so the transition is seamless
+                setTimeout(function() {
+
+                    // Show real nav logo in exactly the same spot
+                    navLogoEl.style.display = 'block';
+                    navLogoEl.style.opacity = '1';
+
+                    // Hide flying clone
+                    flyingLogo.style.transition = 'opacity 0.1s ease';
+                    flyingLogo.style.opacity    = '0';
+
+                    // Fade nav bar chrome in
+                    nav.style.transition = 'opacity 0.3s ease';
+                    nav.style.opacity    = '1';
+
+                    // Stagger in studio name and links
+                    setTimeout(function() { navName.classList.add('visible');  }, 100);
+                    setTimeout(function() { navLinks.classList.add('visible'); }, 200);
+
+                    // Remove landing from DOM
+                    landing.style.display = 'none';
+
+                }, 680);
             });
         });
-
-        // Once animation completes -- show nav, hide flying logo, show real nav logo
-        setTimeout(function() {
-            // Show nav bar
-            nav.classList.add('visible');
-            navName.classList.add('visible');
-            navLinks.classList.add('visible');
-
-            // Swap flying logo for real nav logo
-            flyingLogo.style.opacity = '0';
-            navLogoEl.style.display  = 'block';
-            navLogoEl.style.opacity  = '1';
-
-            // Remove landing from DOM
-            landing.style.display = 'none';
-
-        }, 750);
     }
 </script>
 
