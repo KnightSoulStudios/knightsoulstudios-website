@@ -17,22 +17,20 @@
         }
 
         :root {
-            --base:          #0E0F0D;
-            --surface:       #161A14;
-            --raised:        #1A1F17;
-            --accent:        #6B9E4E;
-            --accent-dim:    rgba(107, 158, 78, 0.12);
-            --accent-border: rgba(107, 158, 78, 0.20);
+            --base:          #0D0F1A;
+            --surface:       #12152A;
+            --raised:        #1A1F35;
+            --accent:        #7A8FBF;
+            --accent-dim:    rgba(122, 143, 191, 0.12);
+            --accent-border: rgba(122, 143, 191, 0.22);
             --text:          #E8DFD0;
-            --text-dim:      #7A7468;
-            --text-mid:      #B0A898;
-            --border:        rgba(255, 255, 255, 0.07);
+            --text-dim:      #6A7280;
+            --text-mid:      #A0AABB;
+            --border:        rgba(122, 143, 191, 0.12);
             --nav-height:    64px;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background: var(--base);
@@ -42,89 +40,92 @@
             overflow-x: hidden;
         }
 
-        /* ── LANDING SCREEN ────────────────────────────────── */
+        /* ── LANDING SCREEN ──────────────────────────────── */
 
         #landing {
             position: fixed;
             inset: 0;
-            z-index: 100;
+            z-index: 200;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0;
             background: var(--base);
-            transition: opacity 0.5s ease 0.4s;
         }
 
-        #landing.exiting {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Atmospheric glow behind logo */
+        /* Atmospheric moon glow */
         #landing::before {
             content: '';
             position: absolute;
-            width: 600px;
-            height: 600px;
+            width: 700px;
+            height: 700px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(107,158,78,0.06) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(122,143,191,0.07) 0%, transparent 70%);
             pointer-events: none;
         }
 
-        /* The logo on the landing screen */
-        #landing-logo {
-            width: 280px;
-            height: 280px;
+        /* The flying logo clone -- this is what animates */
+        #flying-logo {
+            position: fixed;
+            z-index: 300;
+            object-fit: contain;
+            border-radius: 50%;
+            pointer-events: none;
+            /* positioned and sized by JS */
+        }
+
+        /* Static logo on landing -- hidden once flying starts */
+        #landing-logo-static {
+            width: 300px;
+            height: 300px;
             object-fit: contain;
             position: relative;
             z-index: 1;
-            filter: drop-shadow(0 0 40px rgba(107,158,78,0.15));
+            filter: drop-shadow(0 0 60px rgba(122,143,191,0.12));
         }
 
         #landing-tagline {
             font-family: 'Cinzel', serif;
-            font-size: clamp(14px, 2vw, 18px);
+            font-size: clamp(13px, 1.8vw, 17px);
             font-weight: 400;
-            letter-spacing: 0.22em;
+            letter-spacing: 0.28em;
             color: var(--text-mid);
             text-transform: uppercase;
             margin-top: 28px;
             position: relative;
             z-index: 1;
             opacity: 0;
-            animation: fadeUp 0.8s ease 0.3s forwards;
+            animation: fadeUp 0.9s ease 0.4s forwards;
         }
 
         #landing-divider {
-            width: 40px;
+            width: 36px;
             height: 1px;
             background: var(--accent-border);
             margin: 20px auto 0;
             position: relative;
             z-index: 1;
             opacity: 0;
-            animation: fadeUp 0.8s ease 0.5s forwards;
+            animation: fadeUp 0.9s ease 0.6s forwards;
         }
 
         #enter-btn {
             margin-top: 36px;
             font-family: 'Cinzel', serif;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            letter-spacing: 0.25em;
+            letter-spacing: 0.3em;
             text-transform: uppercase;
             color: var(--accent);
             background: none;
             border: 1px solid var(--accent-border);
-            padding: 14px 40px;
+            padding: 14px 44px;
             cursor: pointer;
             position: relative;
             z-index: 1;
             transition: background 0.2s, border-color 0.2s, color 0.2s;
             opacity: 0;
-            animation: fadeUp 0.8s ease 0.7s forwards;
+            animation: fadeUp 0.9s ease 0.8s forwards;
         }
 
         #enter-btn:hover {
@@ -134,16 +135,16 @@
         }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(12px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── MAIN SITE (hidden until Enter clicked) ────────── */
+        /* ── MAIN SITE ───────────────────────────────────── */
 
         #site {
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease 0.3s;
+            transition: opacity 0.5s ease;
         }
 
         #site.visible {
@@ -151,68 +152,69 @@
             pointer-events: auto;
         }
 
-        /* ── NAV ────────────────────────────────────────────── */
+        /* ── NAV ─────────────────────────────────────────── */
 
         nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: var(--nav-height);
-            z-index: 50;
+            z-index: 150;
             display: flex;
             align-items: center;
-            padding: 0 48px;
-            gap: 32px;
-            background: rgba(14, 15, 13, 0.92);
-            backdrop-filter: blur(12px);
+            padding: 0 40px;
+            gap: 20px;
+            background: rgba(13, 15, 26, 0.93);
+            backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border);
+            opacity: 0;
+            transition: opacity 0.4s ease 0.5s;
         }
 
-        /* Logo in nav -- starts invisible, animates in */
-        #nav-logo {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-            border-radius: 50%;
-            opacity: 0;
-            transform: scale(0.6);
-            transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s;
+        nav.visible {
+            opacity: 1;
+        }
+
+        /* Placeholder that matches nav logo size -- keeps layout stable */
+        #nav-logo-placeholder {
+            width: 38px;
+            height: 38px;
             flex-shrink: 0;
         }
 
-        #nav-logo.visible {
-            opacity: 1;
-            transform: scale(1);
+        /* The nav logo is just for fallback display after animation settles */
+        #nav-logo {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            border-radius: 50%;
+            flex-shrink: 0;
+            opacity: 0;
+            display: none; /* shown after flying logo settles */
         }
 
         #nav-studio-name {
             font-family: 'Cinzel', serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             color: var(--text);
-            opacity: 0;
-            transition: opacity 0.4s ease 0.35s;
             white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease 0.7s;
         }
 
-        #nav-studio-name.visible {
-            opacity: 1;
-        }
+        #nav-studio-name.visible { opacity: 1; }
 
         .nav-links {
             margin-left: auto;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
             opacity: 0;
-            transition: opacity 0.4s ease 0.45s;
+            transition: opacity 0.3s ease 0.8s;
         }
 
-        .nav-links.visible {
-            opacity: 1;
-        }
+        .nav-links.visible { opacity: 1; }
 
         .nav-btn {
             font-family: 'Inter', sans-serif;
@@ -221,34 +223,24 @@
             color: var(--text-mid);
             background: none;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             cursor: pointer;
             transition: color 0.15s;
-            letter-spacing: 0.01em;
         }
 
-        .nav-btn:hover {
-            color: var(--text);
-        }
+        .nav-btn:hover { color: var(--text); }
 
         .nav-btn.accent {
             color: var(--accent);
             border: 1px solid var(--accent-border);
             border-radius: 4px;
-            padding: 7px 16px;
         }
 
-        .nav-btn.accent:hover {
-            background: var(--accent-dim);
-        }
+        .nav-btn.accent:hover { background: var(--accent-dim); }
 
-        /* ── PAGE CONTENT ───────────────────────────────────── */
+        /* ── PAGE CONTENT ────────────────────────────────── */
 
-        .page-content {
-            padding-top: var(--nav-height);
-        }
-
-        /* ── SECTIONS ───────────────────────────────────────── */
+        .page-content { padding-top: var(--nav-height); }
 
         section {
             min-height: 100vh;
@@ -261,9 +253,7 @@
             width: 100%;
         }
 
-        section + section {
-            border-top: 1px solid var(--border);
-        }
+        section + section { border-top: 1px solid var(--border); }
 
         .section-label {
             font-size: 11px;
@@ -271,32 +261,30 @@
             letter-spacing: 0.3em;
             text-transform: uppercase;
             color: var(--accent);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             opacity: 0.8;
         }
 
         .section-title {
             font-family: 'Cinzel', serif;
-            font-size: clamp(32px, 4vw, 48px);
+            font-size: clamp(28px, 3.5vw, 44px);
             font-weight: 600;
-            line-height: 1.15;
+            line-height: 1.18;
             letter-spacing: -0.01em;
             color: var(--text);
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .section-body {
             font-size: 16px;
             line-height: 1.8;
             color: var(--text-mid);
-            max-width: 58ch;
+            max-width: 56ch;
         }
 
-        .section-body p + p {
-            margin-top: 16px;
-        }
+        .section-body p + p { margin-top: 16px; }
 
-        /* ── HOME SECTION ───────────────────────────────────── */
+        /* ── HOME ────────────────────────────────────────── */
 
         #home {
             min-height: calc(100vh - var(--nav-height));
@@ -305,26 +293,21 @@
             padding-top: 60px;
         }
 
-        #home .section-body {
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        #home .home-tagline {
+        .home-tagline {
             font-family: 'Cinzel', serif;
-            font-size: clamp(28px, 4vw, 42px);
+            font-size: clamp(24px, 3.5vw, 40px);
             font-weight: 400;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.06em;
             color: var(--text);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
-        #home .home-sub {
+        .home-sub {
             font-size: 16px;
             color: var(--text-dim);
-            max-width: 44ch;
-            margin: 0 auto 48px;
-            line-height: 1.7;
+            max-width: 42ch;
+            margin: 0 auto 44px;
+            line-height: 1.75;
         }
 
         .home-cta {
@@ -336,9 +319,9 @@
 
         .btn-primary {
             font-family: 'Cinzel', serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
             color: var(--base);
             background: var(--accent);
@@ -350,15 +333,13 @@
             transition: opacity 0.2s;
         }
 
-        .btn-primary:hover {
-            opacity: 0.85;
-        }
+        .btn-primary:hover { opacity: 0.82; }
 
         .btn-secondary {
             font-family: 'Cinzel', serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
             color: var(--text-mid);
             background: none;
@@ -375,7 +356,7 @@
             border-color: var(--text-mid);
         }
 
-        /* ── ABOUT SECTION ──────────────────────────────────── */
+        /* ── ABOUT ───────────────────────────────────────── */
 
         #about {
             display: grid;
@@ -384,33 +365,20 @@
             align-items: center;
         }
 
-        #about .about-left {
-            display: flex;
-            flex-direction: column;
-        }
-
-        #about .about-right {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
         .value-item {
-            padding: 20px 0;
+            padding: 18px 0;
             border-bottom: 1px solid var(--border);
         }
 
-        .value-item:first-child {
-            border-top: 1px solid var(--border);
-        }
+        .value-item:first-child { border-top: 1px solid var(--border); }
 
         .value-title {
             font-family: 'Cinzel', serif;
             font-size: 13px;
             font-weight: 600;
             color: var(--text);
-            letter-spacing: 0.05em;
-            margin-bottom: 6px;
+            letter-spacing: 0.04em;
+            margin-bottom: 5px;
         }
 
         .value-body {
@@ -419,75 +387,59 @@
             line-height: 1.65;
         }
 
-        /* ── BIOME ENGINE SECTION ───────────────────────────── */
+        /* ── BIOME ENGINE ────────────────────────────────── */
 
-        #biome-engine {
-            align-items: flex-start;
-        }
+        #biome-engine { align-items: flex-start; }
 
         .engine-card {
-            margin-top: 48px;
+            margin-top: 44px;
             background: var(--surface);
-            border: 1px solid var(--accent-border);
+            border: 1px solid rgba(107, 158, 78, 0.20);
             border-radius: 12px;
-            padding: 48px;
+            padding: 44px;
             display: grid;
             grid-template-columns: 1fr auto;
-            gap: 48px;
+            gap: 44px;
             align-items: center;
             width: 100%;
-            max-width: 800px;
-        }
-
-        .engine-card-left {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            max-width: 780px;
         }
 
         .engine-card-name {
             font-family: 'Cinzel', serif;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 600;
             color: var(--text);
-            letter-spacing: 0.02em;
+            margin-bottom: 14px;
         }
 
-        .engine-card-name span {
-            color: var(--accent);
-        }
+        .engine-card-name span { color: #6B9E4E; }
 
         .engine-card-desc {
             font-size: 14px;
             line-height: 1.75;
             color: var(--text-mid);
-            max-width: 44ch;
+            max-width: 42ch;
+            margin-bottom: 20px;
         }
 
         .engine-stats {
             display: flex;
-            gap: 32px;
-            margin-top: 8px;
+            gap: 28px;
+            margin-bottom: 24px;
         }
 
         .engine-stat-value {
             font-family: 'Cinzel', serif;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
-            color: var(--accent);
+            color: #6B9E4E;
         }
 
         .engine-stat-label {
             font-size: 11px;
             color: var(--text-dim);
             margin-top: 2px;
-        }
-
-        .engine-card-right {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
         }
 
         .engine-globe {
@@ -497,17 +449,15 @@
             border-radius: 16px;
         }
 
-        /* ── GAMES SECTION ──────────────────────────────────── */
+        /* ── GAMES ───────────────────────────────────────── */
 
-        #games {
-            align-items: flex-start;
-        }
+        #games { align-items: flex-start; }
 
         .games-grid {
-            margin-top: 48px;
+            margin-top: 44px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 18px;
             width: 100%;
         }
 
@@ -515,11 +465,11 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 32px 24px;
+            padding: 28px 22px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            min-height: 180px;
+            gap: 8px;
+            min-height: 170px;
             justify-content: flex-end;
         }
 
@@ -527,11 +477,11 @@
             border-style: dashed;
             justify-content: center;
             align-items: center;
-            opacity: 0.4;
+            opacity: 0.35;
         }
 
         .game-card-label {
-            font-size: 11px;
+            font-size: 10px;
             font-family: 'Cinzel', serif;
             letter-spacing: 0.2em;
             text-transform: uppercase;
@@ -540,7 +490,7 @@
 
         .game-card-name {
             font-family: 'Cinzel', serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--text);
         }
@@ -551,47 +501,37 @@
             line-height: 1.6;
         }
 
-        .game-card.placeholder .placeholder-text {
+        .placeholder-text {
             font-size: 12px;
             color: var(--text-dim);
             font-family: 'Cinzel', serif;
             letter-spacing: 0.1em;
         }
 
-        /* ── CONTACT SECTION ────────────────────────────────── */
+        /* ── CONTACT ─────────────────────────────────────── */
 
         #contact {
-            align-items: flex-start;
             min-height: auto;
             padding-bottom: 120px;
+            align-items: flex-start;
         }
 
-        .contact-links {
-            margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        .contact-links { margin-top: 36px; }
 
         .contact-link {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 20px;
             text-decoration: none;
             color: var(--text-mid);
             font-size: 15px;
-            transition: color 0.15s;
             padding: 16px 0;
             border-bottom: 1px solid var(--border);
+            transition: color 0.15s;
         }
 
-        .contact-link:first-child {
-            border-top: 1px solid var(--border);
-        }
-
-        .contact-link:hover {
-            color: var(--text);
-        }
+        .contact-link:first-child { border-top: 1px solid var(--border); }
+        .contact-link:hover { color: var(--text); }
 
         .contact-link-label {
             font-size: 11px;
@@ -602,69 +542,33 @@
             flex-shrink: 0;
         }
 
-        /* ── FOOTER ─────────────────────────────────────────── */
+        /* ── FOOTER ──────────────────────────────────────── */
 
         footer {
             border-top: 1px solid var(--border);
-            padding: 24px 48px;
+            padding: 22px 48px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .footer-left {
+        .footer-left, .footer-right {
             font-size: 12px;
             color: var(--text-dim);
         }
 
-        .footer-right {
-            font-size: 12px;
-            color: var(--text-dim);
-            opacity: 0.5;
-        }
+        .footer-right { opacity: 0.5; }
 
-        /* ── RESPONSIVE ─────────────────────────────────────── */
+        /* ── RESPONSIVE ──────────────────────────────────── */
 
         @media (max-width: 800px) {
-            nav {
-                padding: 0 20px;
-                gap: 16px;
-            }
-
-            section {
-                padding: 80px 20px;
-            }
-
-            #about {
-                grid-template-columns: 1fr;
-                gap: 48px;
-            }
-
-            .engine-card {
-                grid-template-columns: 1fr;
-                padding: 32px 24px;
-            }
-
-            .engine-card-right {
-                flex-direction: row;
-                justify-content: flex-start;
-            }
-
-            .games-grid {
-                grid-template-columns: 1fr;
-            }
-
-            footer {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-                padding: 20px;
-            }
-
-            #landing-logo {
-                width: 200px;
-                height: 200px;
-            }
+            nav { padding: 0 20px; }
+            section { padding: 80px 20px; }
+            #about { grid-template-columns: 1fr; gap: 44px; }
+            .engine-card { grid-template-columns: 1fr; padding: 28px 20px; }
+            .games-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; align-items: flex-start; gap: 6px; padding: 18px 20px; }
+            #landing-logo-static { width: 220px; height: 220px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -678,170 +582,113 @@
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════
-     LANDING SCREEN
-════════════════════════════════════════════════════════════════ -->
+<!-- Flying logo clone -- positioned by JS during animation -->
+<img id="flying-logo" src="KnightSoulStudiosLogoLarge.png" alt="">
+
+<!-- ═══════════════ LANDING ═══════════════ -->
 <div id="landing">
-    <img id="landing-logo" src="KnightSoulStudiosLogoLarge.png" alt="Knight Soul Studios">
+    <img id="landing-logo-static" src="KnightSoulStudiosLogoLarge.png" alt="Knight Soul Studios">
     <div id="landing-tagline">Worlds worth fighting for</div>
     <div id="landing-divider"></div>
     <button id="enter-btn" onclick="enterSite()">Enter</button>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     MAIN SITE
-════════════════════════════════════════════════════════════════ -->
+<!-- ═══════════════ MAIN SITE ═══════════════ -->
 <div id="site">
 
-    <!-- Nav -->
-    <nav>
+    <nav id="main-nav">
+        <div id="nav-logo-placeholder"></div>
         <img id="nav-logo" src="KnightSoulStudiosLogo.png" alt="Knight Soul Studios">
         <div id="nav-studio-name">Knight Soul Studios</div>
         <div class="nav-links" id="nav-links">
-            <button class="nav-btn" onclick="scrollTo('home')">Home</button>
-            <button class="nav-btn" onclick="scrollTo('about')">About</button>
-            <button class="nav-btn" onclick="scrollTo('biome-engine')">BIOME Engine</button>
-            <button class="nav-btn" onclick="scrollTo('games')">Games</button>
-            <button class="nav-btn accent" onclick="scrollTo('contact')">Contact</button>
+            <button class="nav-btn" onclick="scrollToSection('home')">Home</button>
+            <button class="nav-btn" onclick="scrollToSection('about')">About</button>
+            <button class="nav-btn" onclick="scrollToSection('biome-engine')">BIOME Engine</button>
+            <button class="nav-btn" onclick="scrollToSection('games')">Games</button>
+            <button class="nav-btn accent" onclick="scrollToSection('contact')">Contact</button>
         </div>
     </nav>
 
     <div class="page-content">
 
-        <!-- Home -->
         <section id="home">
             <div class="home-tagline">Worlds worth fighting for</div>
-            <p class="home-sub">
-                Knight Soul Studios is an independent game studio building
-                tools and worlds that anyone can make great games with.
-            </p>
+            <p class="home-sub">Knight Soul Studios is an independent game studio building tools and worlds that anyone can make great games with.</p>
             <div class="home-cta">
                 <a href="https://biome-engine.com" class="btn-primary">Explore BIOME Engine</a>
-                <button class="btn-secondary" onclick="scrollTo('about')">Learn more</button>
+                <button class="btn-secondary" onclick="scrollToSection('about')">Learn more</button>
             </div>
         </section>
 
-        <!-- About -->
         <section id="about">
-            <div class="about-left">
+            <div style="display:flex;flex-direction:column;">
                 <div class="section-label">About</div>
-                <h2 class="section-title">An independent studio building for everyone</h2>
+                <h2 class="section-title">An independent studio<br>building for everyone</h2>
                 <div class="section-body">
-                    <p>
-                        Knight Soul Studios was founded on a single belief -- that making games
-                        should be accessible to everyone, regardless of experience or background.
-                    </p>
-                    <p>
-                        We build our own engine, our own tools, and our own games.
-                        Everything we create is designed so that a solo developer with one skill
-                        and a AAA studio with a full team can both do their best work.
-                    </p>
+                    <p>Knight Soul Studios was founded on a single belief -- that making games should be accessible to everyone, regardless of experience or background.</p>
+                    <p>We build our own engine, our own tools, and our own games. Everything we create is designed so that a solo developer with one skill and a AAA studio with a full team can both do their best work.</p>
                 </div>
             </div>
-            <div class="about-right">
+            <div style="display:flex;flex-direction:column;margin-top:48px;">
                 <div class="value-item">
                     <div class="value-title">Level playing field</div>
-                    <div class="value-body">Procedural worlds, visual scripting, and smart presets
-                    mean every developer can contribute what they are good at.</div>
+                    <div class="value-body">Procedural worlds, visual scripting, and smart presets mean every developer can contribute what they are good at.</div>
                 </div>
                 <div class="value-item">
                     <div class="value-title">Fair commercial terms</div>
-                    <div class="value-body">1% royalty. No upfront cost. No tiers.
-                    The best commercial terms in the industry.</div>
+                    <div class="value-body">1% royalty. No upfront cost. No tiers. The best commercial terms in the industry.</div>
                 </div>
                 <div class="value-item">
                     <div class="value-title">Built for the genre</div>
-                    <div class="value-body">Purpose-built systems for open world survival.
-                    Not a generic engine stretched to fit.</div>
+                    <div class="value-body">Purpose-built systems for open world survival. Not a generic engine stretched to fit.</div>
                 </div>
                 <div class="value-item">
                     <div class="value-title">All platforms</div>
-                    <div class="value-body">PC, Xbox, PlayStation, Nintendo.
-                    Supported as standard from day one.</div>
+                    <div class="value-body">PC, Xbox, PlayStation, Nintendo. Supported as standard from day one.</div>
                 </div>
             </div>
         </section>
 
-        <!-- BIOME Engine -->
         <section id="biome-engine">
             <div class="section-label">Our Engine</div>
             <h2 class="section-title">BIOME Engine</h2>
-            <div class="section-body">
-                <p>
-                    A purpose-built game engine for open world survival games.
-                    Launching Q4 2027.
-                </p>
-            </div>
+            <div class="section-body"><p>A purpose-built game engine for open world survival games. Launching Q4 2027.</p></div>
             <div class="engine-card">
-                <div class="engine-card-left">
+                <div>
                     <div class="engine-card-name">BIOME <span>Engine</span></div>
-                    <div class="engine-card-desc">
-                        Biological Interactions &amp; Open-world Map Engine.
-                        52 modules. Procedural islands. Real survival simulation.
-                        Visual scripting. All platforms. 1% royalty.
-                    </div>
+                    <div class="engine-card-desc">Biological Interactions &amp; Open-world Map Engine. 52 modules. Procedural islands. Real survival simulation. Visual scripting. All platforms. 1% royalty.</div>
                     <div class="engine-stats">
-                        <div>
-                            <div class="engine-stat-value">1%</div>
-                            <div class="engine-stat-label">royalty</div>
-                        </div>
-                        <div>
-                            <div class="engine-stat-value">52</div>
-                            <div class="engine-stat-label">modules</div>
-                        </div>
-                        <div>
-                            <div class="engine-stat-value">Q4 2027</div>
-                            <div class="engine-stat-label">target launch</div>
-                        </div>
+                        <div><div class="engine-stat-value">1%</div><div class="engine-stat-label">royalty</div></div>
+                        <div><div class="engine-stat-value">52</div><div class="engine-stat-label">modules</div></div>
+                        <div><div class="engine-stat-value">Q4 2027</div><div class="engine-stat-label">target launch</div></div>
                     </div>
-                    <div style="margin-top: 16px;">
-                        <a href="https://biome-engine.com" class="btn-primary">Visit biome-engine.com</a>
-                    </div>
+                    <a href="https://biome-engine.com" class="btn-primary">Visit biome-engine.com</a>
                 </div>
-                <div class="engine-card-right">
+                <div>
                     <img src="biome_globe_icon.png" alt="BIOME Engine" class="engine-globe">
                 </div>
             </div>
         </section>
 
-        <!-- Games -->
         <section id="games">
             <div class="section-label">Games</div>
             <h2 class="section-title">Titles in development</h2>
-            <div class="section-body">
-                <p>
-                    Our first titles will be built on BIOME Engine and announced
-                    as development progresses. Watch this space.
-                </p>
-            </div>
+            <div class="section-body"><p>Our first titles will be built on BIOME Engine and announced as development progresses. Watch this space.</p></div>
             <div class="games-grid">
                 <div class="game-card">
                     <div class="game-card-label">BIOME1 — Volcanic</div>
                     <div class="game-card-name">Untitled Survival Title</div>
-                    <div class="game-card-desc">
-                        Open world wilderness survival. Procedurally generated island.
-                        Announcement coming 2027.
-                    </div>
+                    <div class="game-card-desc">Open world wilderness survival. Procedurally generated island. Announcement coming 2027.</div>
                 </div>
-                <div class="game-card placeholder">
-                    <div class="placeholder-text">Coming soon</div>
-                </div>
-                <div class="game-card placeholder">
-                    <div class="placeholder-text">Coming soon</div>
-                </div>
+                <div class="game-card placeholder"><div class="placeholder-text">Coming soon</div></div>
+                <div class="game-card placeholder"><div class="placeholder-text">Coming soon</div></div>
             </div>
         </section>
 
-        <!-- Contact -->
         <section id="contact">
             <div class="section-label">Contact</div>
             <h2 class="section-title">Get in touch</h2>
-            <div class="section-body">
-                <p>
-                    Whether you are a developer interested in BIOME Engine,
-                    press, or just want to say hello -- we would love to hear from you.
-                </p>
-            </div>
+            <div class="section-body"><p>Whether you are a developer interested in BIOME Engine, press, or just want to say hello -- we would love to hear from you.</p></div>
             <div class="contact-links">
                 <a href="mailto:enquiries@knightsoulstudios.com" class="contact-link">
                     <span class="contact-link-label">General</span>
@@ -868,40 +715,79 @@
 </div>
 
 <script>
-    function enterSite() {
-        const landing   = document.getElementById('landing');
-        const site      = document.getElementById('site');
-        const navLogo   = document.getElementById('nav-logo');
-        const navName   = document.getElementById('nav-studio-name');
-        const navLinks  = document.getElementById('nav-links');
-
-        // Fade out landing
-        landing.classList.add('exiting');
-
-        // Show site
-        site.classList.add('visible');
-
-        // Animate nav elements in with stagger
-        setTimeout(() => { navLogo.classList.add('visible');  }, 300);
-        setTimeout(() => { navName.classList.add('visible');  }, 400);
-        setTimeout(() => { navLinks.classList.add('visible'); }, 500);
-
-        // Remove landing from DOM after transition
-        setTimeout(() => {
-            landing.style.display = 'none';
-        }, 1000);
+    // ── Scroll to section ─────────────────────────────────────
+    function scrollToSection(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        var navHeight = 64;
+        var top = el.getBoundingClientRect().top + window.pageYOffset - navHeight;
+        window.scrollTo({ top: top, behavior: 'smooth' });
     }
 
-    function scrollTo(id) {
-        const el = document.getElementById(id);
-        if (el) {
-            const navHeight = parseInt(
-                getComputedStyle(document.documentElement)
-                    .getPropertyValue('--nav-height')
-            );
-            const top = el.getBoundingClientRect().top + window.scrollY - navHeight;
-            window.scrollTo({ top, behavior: 'smooth' });
-        }
+    // ── Enter site with logo fly animation ───────────────────
+    function enterSite() {
+        var landing       = document.getElementById('landing');
+        var staticLogo    = document.getElementById('landing-logo-static');
+        var flyingLogo    = document.getElementById('flying-logo');
+        var site          = document.getElementById('site');
+        var nav           = document.getElementById('main-nav');
+        var navPlaceholder= document.getElementById('nav-logo-placeholder');
+        var navLogoEl     = document.getElementById('nav-logo');
+        var navName       = document.getElementById('nav-studio-name');
+        var navLinks      = document.getElementById('nav-links');
+
+        // Get current position and size of the static logo on the landing page
+        var fromRect = staticLogo.getBoundingClientRect();
+
+        // Get where the nav placeholder is -- this is where logo will land
+        var toRect = navPlaceholder.getBoundingClientRect();
+
+        // Position the flying logo exactly over the static logo to start
+        flyingLogo.style.width       = fromRect.width  + 'px';
+        flyingLogo.style.height      = fromRect.height + 'px';
+        flyingLogo.style.left        = fromRect.left   + 'px';
+        flyingLogo.style.top         = fromRect.top    + 'px';
+        flyingLogo.style.transition  = 'none';
+        flyingLogo.style.opacity     = '1';
+        flyingLogo.style.borderRadius= '50%';
+
+        // Hide the static logo now that flying clone is covering it
+        staticLogo.style.opacity = '0';
+
+        // Fade out the rest of the landing screen text
+        landing.style.transition = 'opacity 0.4s ease';
+        landing.style.opacity    = '0';
+
+        // Show the site behind (but nav still hidden)
+        site.classList.add('visible');
+
+        // After one frame, trigger the fly animation
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                flyingLogo.style.transition = 'left 0.7s cubic-bezier(0.4,0,0.2,1), top 0.7s cubic-bezier(0.4,0,0.2,1), width 0.7s cubic-bezier(0.4,0,0.2,1), height 0.7s cubic-bezier(0.4,0,0.2,1)';
+                flyingLogo.style.left   = toRect.left   + 'px';
+                flyingLogo.style.top    = toRect.top    + 'px';
+                flyingLogo.style.width  = toRect.width  + 'px';
+                flyingLogo.style.height = toRect.height + 'px';
+            });
+        });
+
+        // Once animation completes -- show nav, hide flying logo, show real nav logo
+        setTimeout(function() {
+            // Show nav bar
+            nav.classList.add('visible');
+            navName.classList.add('visible');
+            navLinks.classList.add('visible');
+
+            // Swap flying logo for real nav logo
+            flyingLogo.style.opacity = '0';
+            navLogoEl.style.display  = 'block';
+            navLogoEl.style.opacity  = '1';
+
+            // Remove landing from DOM
+            landing.style.display = 'none';
+
+        }, 750);
     }
 </script>
 
