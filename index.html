@@ -169,11 +169,13 @@
             backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border);
             opacity: 0;
+			pointer-events: none;
             transition: opacity 0.4s ease 0.5s;
         }
 
         nav.visible {
             opacity: 1;
+			pointer-events: auto;
         }
 
         /* Placeholder that matches nav logo size -- keeps layout stable */
@@ -213,7 +215,13 @@
             align-items: center;
             gap: 4px;
             opacity: 0;
+            pointer-events: none;
             transition: opacity 0.3s ease 0.8s;
+        }
+
+        .nav-links.visible { 
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .nav-links.visible { opacity: 1; }
