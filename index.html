@@ -822,7 +822,8 @@
                     setTimeout(function() { navLinks.classList.add('visible'); }, 200);
 
                     // Remove landing from DOM
-                    landing.style.display = 'none';
+                    site.style.pointerEvents = 'auto';
+					landing.style.display = 'none';
 
                 }, 680);
             });
